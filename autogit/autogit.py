@@ -33,6 +33,8 @@ commands.append(git_run(['git', 'checkout', branch_name, '.']))
 commands.append(git_run(['git', 'add', '-A']))
 timestamp = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 commands.append(git_run(['git', 'commit', '-m', f'Backup: {timestamp}']))
+if 'nothing to commit' in commands[-1].stdout.decode('UTF-8'):
+    print('There was no change since the last backup. No commit being created')
 commands.append(git_run(['git', 'checkout', branch_name]))
 commands.append(git_run(['git', 'reset', 'HEAD^']))
 
