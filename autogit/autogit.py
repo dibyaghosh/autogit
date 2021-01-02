@@ -43,8 +43,10 @@ def backup(path_to_repository, verbose=True):
     commands.append(git_run(['git', 'checkout', branch_name]))
     commands.append(git_run(['git', 'reset', 'HEAD^']))
     if verbose:
+        import textwrap
         for command in commands:
-            print(command)
+            print(' '.join(command.args))
+            print(textwrap.indent(command.stdout + command.stderr, '\t'))
 
 if __name__ == '__main__':
     backup(osp.abspath(osp.join(osp.dirname(__file__), '..')), verbose=True)
