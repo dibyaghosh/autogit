@@ -14,4 +14,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     python_requires=">=3.6.0",
     packages=setuptools.find_packages(),
+    entry_points={
+        "console_scripts": [
+            "autogit-backup = autogit.autogit:main"
+        ]
+    },
 )
