@@ -9,12 +9,12 @@ def backup(path_to_repository, verbose=True):
     branch_dir = path_to_repository
     assert osp.exists(osp.join(branch_dir, '.git')), 'Could not find .git'
     
-    git_run = functools.partial(subprocess.run, cwd=branch_dir, capture_output=True)
+    git_run = functools.partial(subprocess.run, cwd=branch_dir, capture_output=True, encoding='UTF-8')
 
     # Get current branch name with
     # git rev-parse --abbrev-ref HEAD
     current_branch = git_run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
-    branch_name = current_branch.stdout.strip().decode('UTF-8')
+    branch_name = current_branch.stdout.strip()
     # Backing up to {branch_name}-backup (e.g. master-backup) 
     backup_branch_name = f'{branch_name}-backup'
 
@@ -37,7 +37,7 @@ def backup(path_to_repository, verbose=True):
     commands.append(git_run(['git', 'add', '-A']))
     timestamp = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     commands.append(git_run(['git', 'commit', '-m', f'Backup: {timestamp}']))
-    if 'nothing to commit' in commands[-1].stdout.decode('UTF-8'):
+    if 'nothing to commit' in commands[-1].stdout:
         if verbose:
             print('There was no change since the last backup. No commit being created')
     commands.append(git_run(['git', 'checkout', branch_name]))
@@ -46,7 +46,7 @@ def backup(path_to_repository, verbose=True):
         import textwrap
         for command in commands:
             print(' '.join(command.args))
-            print(textwrap.indent((command.stdout + command.stderr).decode('UTF-8'), '\t'))
+            print(textwrap.indent((command.stdout + command.stderr), '\t'))
 
 if __name__ == '__main__':
     backup(osp.abspath(osp.join(osp.dirname(__file__), '..')), verbose=True)
