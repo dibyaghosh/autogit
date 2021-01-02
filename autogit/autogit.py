@@ -46,7 +46,7 @@ def backup(path_to_repository, verbose=True):
         import textwrap
         for command in commands:
             print(' '.join(command.args))
-            print(textwrap.indent(command.stdout + command.stderr, '\t'))
+            print(textwrap.indent((command.stdout + command.stderr).decode('UTF-8'), '\t'))
 
 if __name__ == '__main__':
     backup(osp.abspath(osp.join(osp.dirname(__file__), '..')), verbose=True)
