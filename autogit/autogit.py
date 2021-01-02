@@ -48,7 +48,9 @@ def backup(path_to_repository, include_untracked=True, verbose=True):
     commands.append(git_run(['git', 'add', untracked_flag]))
     timestamp = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     commands.append(git_run(['git', 'commit', '-m', f'Backup: {timestamp}']))
+    backup_id = commands[-1].stdout.split('\n')[0]
     if 'nothing to commit' in commands[-1].stdout:
+        backup_id = None
         if verbose:
             print('There was no change since the last backup. No commit being created')
     commands.append(git_run(['git', 'checkout', branch_name]))
@@ -58,7 +60,7 @@ def backup(path_to_repository, include_untracked=True, verbose=True):
         for command in commands:
             print(' '.join(command.args))
             print(textwrap.indent((command.stdout + command.stderr), '\t'))
-    return 
+    return backup_id
 
 def main():
     import argparse
