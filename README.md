@@ -1,17 +1,25 @@
 # AutoGit
 
-Python library for creating periodic git backups of your codebase (e.g. right before launching an experiment).
+Autogit is a python library for creating periodic git backups of your codebase (e.g. right before launching an experiment). 
 
+## Why might this be useful?
+
+When I run an experiment, it can be really useful to preserve exactly what the codebase looked like when I ran the experiment, in case I want to post-analyze later. Oftentime this is useful for really small or potentially temporary changes that I either don't want to be permanent, or isn't worth making a full real commit for.
+
+## Usage 
+You can use autogit as a python library
 ```python
 import autogit
 autogit.backup('path_to_my_repo')
 ```
 
+or a command-line utility
+
+```bash
+autogit-backup path/to/my/repo
+```
+
 This code-snippet will save an exact copy of your code to a side branch (e.g. `main-backup` if the current branch is `main`) with a timestamp-marked commit.
-
-**Why might this be useful?**
-
-When I run an experiment, it can be really useful to preserve exactly what the codebase looked like when I ran the experiment, in case I want to post-analyze later. Oftentime this is useful for really small or potentially temporary changes that I either don't want to be permanent, or isn't worth making a full real commit for.
 
 **What does it look like?**
 
