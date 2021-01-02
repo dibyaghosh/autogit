@@ -7,11 +7,11 @@ def get_readme():
         return f.read()
 
 setuptools.setup(
-    name="rlutil",
+    name="autogit",
     version="0.1.0",
-    description="Utilities for RL algorithms",
+    description="Programatically progressive backing up a git repo",
     long_description=get_readme(),
     long_description_content_type="text/markdown",
-    python_requires=">=3.5.0",
+    python_requires=">=3.6.0",
     packages=setuptools.find_packages(),
 )

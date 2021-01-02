@@ -5,8 +5,19 @@ from datetime import datetime
 import functools
 
 
-def backup(path_to_repository, verbose=True):
-    branch_dir = path_to_repository
+def backup(path_to_repository, include_untracked=True, verbose=True):
+    """
+    Arguments:
+        path_to_repository (str): A path (potentially relative) to the git repository
+        verbose (bool): Print debug information
+        include_untracked (bool): If true, this will include files that are not
+            currently tracked by git as well. It still respects .gitignore though
+            Otherwise, only files that are being tracked by git will be logged.
+    """
+
+    untracked_flag = '-A' if include_untracked else '-u'
+
+    branch_dir = osp.abspath(path_to_repository)
     assert osp.exists(osp.join(branch_dir, '.git')), 'Could not find .git'
     
     git_run = functools.partial(subprocess.run, cwd=branch_dir, capture_output=True, encoding='UTF-8')
@@ -30,11 +41,11 @@ def backup(path_to_repository, verbose=True):
         git_run(['git', 'branch', backup_branch_name])
 
     commands = []
-    commands.append(git_run(['git', 'add', '-A']))
+    commands.append(git_run(['git', 'add', untracked_flag]))
     commands.append(git_run(['git', 'commit', '--allow-empty', '--allow-empty-message', '-m', '']))
     commands.append(git_run(['git', 'checkout', backup_branch_name]))
     commands.append(git_run(['git', 'checkout', branch_name, '.']))
-    commands.append(git_run(['git', 'add', '-A']))
+    commands.append(git_run(['git', 'add', untracked_flag]))
     timestamp = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     commands.append(git_run(['git', 'commit', '-m', f'Backup: {timestamp}']))
     if 'nothing to commit' in commands[-1].stdout:

@@ -1,3 +1,3 @@
 # AutoGit
 
-An interface for automatically saving the current workspace as a commit.
+An interface for automatically making backups the current workspace 
