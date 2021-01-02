@@ -69,6 +69,7 @@ def main():
     parser.add_argument("--only-tracked", help="Only backup files that have previously been added to git",
                 action="store_true")
     args = parser.parse_args()
+
     print(backup(args.repo_path, include_untracked=not args.only_tracked, verbose=args.verbose))
 
 if __name__ == '__main__':
