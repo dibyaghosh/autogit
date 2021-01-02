@@ -31,7 +31,7 @@ def backup(path_to_repository, verbose=True):
 
     commands = []
     commands.append(git_run(['git', 'add', '-A']))
-    commands.append(git_run(['git', 'commit', '--allow-empty', '--allow-empty-message', '-m', '""']))
+    commands.append(git_run(['git', 'commit', '--allow-empty', '--allow-empty-message', '-m', '']))
     commands.append(git_run(['git', 'checkout', backup_branch_name]))
     commands.append(git_run(['git', 'checkout', branch_name, '.']))
     commands.append(git_run(['git', 'add', '-A']))
