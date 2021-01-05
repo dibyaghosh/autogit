@@ -72,6 +72,17 @@ def main():
                 action="store_true")
     args = parser.parse_args()
 
+    args.repo_path = osp.abspath(args.repo_path)
+    if not osp.exists(osp.join(args.repo_path, '.git')):
+        while True:
+            par_dir = osp.abspath(osp.join(args.repo_path, '..'))
+            if par_dir == args.repo_path:
+                raise Exception('Could not find git repository.')
+            args.repo_path = par_dir
+            if osp.exists(osp.join(args.repo_path, '.git')):
+                print(f'Found git repository at {args.repo_path}')
+                break
+
     print(backup(args.repo_path, include_untracked=not args.only_tracked, verbose=args.verbose))
 
 if __name__ == '__main__':
