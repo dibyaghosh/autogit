@@ -1,4 +1,5 @@
 import os
+import pathlib
 import os.path as osp
 import subprocess
 from datetime import datetime
@@ -17,10 +18,10 @@ def backup(path_to_repository, include_untracked=True, verbose=True):
 
     untracked_flag = '-A' if include_untracked else '-u'
 
-    branch_dir = osp.abspath(path_to_repository)
-    assert osp.exists(osp.join(branch_dir, '.git')), 'Could not find .git'
+    repo_dir = pathlib.Path(path_to_repository).resolve()
+    assert (repo_dir / '.git').exists(), 'Could not find .git'
     
-    git_run = functools.partial(subprocess.run, cwd=branch_dir, capture_output=True, encoding='UTF-8')
+    git_run = functools.partial(subprocess.run, cwd=repo_dir, capture_output=True, encoding='UTF-8')
 
     # Get current branch name with
     # git rev-parse --abbrev-ref HEAD
@@ -30,7 +31,7 @@ def backup(path_to_repository, include_untracked=True, verbose=True):
     backup_branch_name = f'{branch_name}-backup'
 
     if verbose:
-        print(f'Backing up {branch_name} to {backup_branch_name} on repo {branch_dir}')
+        print(f'Backing up {branch_name} to {backup_branch_name} on repo {repo_dir}')
 
     # git branch --list <backupbranch>
     backup_exists = git_run(['git', 'branch', '--list', backup_branch_name])
@@ -72,14 +73,13 @@ def main():
                 action="store_true")
     args = parser.parse_args()
 
-    args.repo_path = osp.abspath(args.repo_path)
-    if not osp.exists(osp.join(args.repo_path, '.git')):
+    args.repo_path = pathlib.Path(args.repo_path).resolve()
+    if not (args.repo_path / '.git').exists():
         while True:
-            par_dir = osp.abspath(osp.join(args.repo_path, '..'))
-            if par_dir == args.repo_path:
+            if args.repo_path.parent == args.repo_path:
                 raise Exception('Could not find git repository.')
-            args.repo_path = par_dir
-            if osp.exists(osp.join(args.repo_path, '.git')):
+            args.repo_path = args.repo_path.parent
+            if (args.repo_path / '.git').exists():
                 print(f'Found git repository at {args.repo_path}')
                 break
 
